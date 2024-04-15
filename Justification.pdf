@@ -1,0 +1,13 @@
+# Programming Paradigm Justification
+
+**Selected Paradigm**: [Your Choice: Procedural C, Object-Oriented Java, or Functional Haskell]
+
+**Reasons for Selection**:
+- [Your explanation here based on ease of use, suitability for real-time applications, community support, library availability, etc., not exceeding 100 words.]
+
+**Reasons for Not Selecting Other Paradigms**:
+- **Procedural Programming**: [Your reason here.]
+- **Object-Oriented Programming**: [Your reason here.]
+- **Functional Programming**: [Your reason here.]
+
+This justification reflects the project's requirements to maximize real-time efficiency and ease of maintenance, while also aligning with the robust features offered by the chosen programming paradigm.
