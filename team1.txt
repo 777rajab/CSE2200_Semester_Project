@@ -1,0 +1,12 @@
+Team: Team A
+1 John Smith
+2 David Johnson
+3 Michael Williams
+4 James Brown
+5 Robert Jones
+6 William Miller
+7 Joseph Davis
+8 Daniel Garcia
+9 Charles Rodriguez
+10 Thomas Martinez
+11 Christopher Hernandez
