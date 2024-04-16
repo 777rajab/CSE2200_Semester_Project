@@ -10,7 +10,7 @@ struct Team_2 {
     int score;
 };
 
-
+dis a test
 struct Player{
     char name[50];
     int Runs_S, Runs_C;
