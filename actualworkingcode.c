@@ -295,6 +295,7 @@ void startOver(struct Match *match, struct CricketPlayer players[],
 int main() {
   // structs
   struct Match match;
+  match.over.overNum = 0;
   struct CricketPlayer players1[MAX_PLAYERS];
   struct CricketPlayer players2[MAX_PLAYERS];
   struct CricketPlayer *batter1, *batter2;
