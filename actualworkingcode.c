@@ -296,6 +296,9 @@ int main() {
   // structs
   struct Match match;
   match.over.overNum = 0;
+  match.over.balls = 0;
+  match.over.Runs = 0;
+  match.over.Wickets = 0;
   struct CricketPlayer players1[MAX_PLAYERS];
   struct CricketPlayer players2[MAX_PLAYERS];
   struct CricketPlayer *batter1, *batter2;
