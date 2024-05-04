@@ -47,6 +47,7 @@ struct Match {
   struct Match_Event mEvent;
   int matchResults;
   struct Over over;
+  int teamSwitched; // Flag to indicate if teams are switched
 };
 
 struct Sponsor {
@@ -63,95 +64,114 @@ void initializeTeams(struct Match *match) {
   match->bowlingTeam.score = 0;
 }
 
-// players of each team
-void initializePlayers(struct CricketPlayer players[], const char *teamName) {
-  for (int i = 0; i < MAX_PLAYERS; i++) {
-    players[i].id = i + 1;
-    strcpy(players[i].team, teamName);
-    
-    players[i].runsS = 0;
-    players[i].runsC = 0;
-    players[i].ballsF = 0;
-    players[i].ballsB = 0;
-    players[i].boundaries = 0;
-    players[i].wickets = 0;
-    players[i].strikeR = 0.0;
-    players[i].econR = 0.0;
-    
-    if (strcmp(teamName, "Team A") == 0) {
-      switch (i) {
-      case 0:
-        strcpy(players[i].name, "John Smith");
-        break;
-      case 1:
-        strcpy(players[i].name, "David Johnson");
-        break;
-      case 2:
-        strcpy(players[i].name, "Michael Williams");
-        break;
-      case 3:
-        strcpy(players[i].name, "James Brown");
-        break;
-      case 4:
-        strcpy(players[i].name, "Robert Jones");
-        break;
-      case 5:
-        strcpy(players[i].name, "William Miller");
-        break;
-      case 6:
-        strcpy(players[i].name, "Joseph Davis");
-        break;
-      case 7:
-        strcpy(players[i].name, "Daniel Garcia");
-        break;
-      case 8:
-        strcpy(players[i].name, "Charles Rodriguez");
-        break;
-      case 9:
-        strcpy(players[i].name, "Thomas Martinez");
-        break;
-      case 10:
-        strcpy(players[i].name, "Christopher Hernandez");
-        break;
-      }
-    } else if (strcmp(teamName, "Team B") == 0) {
-      switch (i) {
-      case 0:
-        strcpy(players[i].name, "Matthew Wilson");
-        break;
-      case 1:
-        strcpy(players[i].name, "Andrew Anderson");
-        break;
-      case 2:
-        strcpy(players[i].name, "Edward Taylor");
-        break;
-      case 3:
-        strcpy(players[i].name, "Joshua Moore");
-        break;
-      case 4:
-        strcpy(players[i].name, "Benjamin Jackson");
-        break;
-      case 5:
-        strcpy(players[i].name, "Samuel Harris");
-        break;
-      case 6:
-        strcpy(players[i].name, "Jonathan Martin");
-        break;
-      case 7:
-        strcpy(players[i].name, "Nathan Thompson");
-        break;
-      case 8:
-        strcpy(players[i].name, "Ryan White");
-        break;
-      case 9:
-        strcpy(players[i].name, "Timothy Lee");
-        break;
-      case 10:
-        strcpy(players[i].name, "Adam Scott");
-        break;
-      }
+// Function to initialize players for Team A
+void initializeTeamAPlayers(struct CricketPlayer players[]) {
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        players[i].id = i + 1;
+        strcpy(players[i].team, "Team A");
+
+        // Assign player names for Team A
+        switch (i) {
+            case 0:
+                strcpy(players[i].name, "John Smith");
+                break;
+            case 1:
+                strcpy(players[i].name, "David Johnson");
+                break;
+            case 2:
+                strcpy(players[i].name, "Michael Williams");
+                break;
+            case 3:
+                strcpy(players[i].name, "James Brown");
+                break;
+            case 4:
+                strcpy(players[i].name, "Robert Jones");
+                break;
+            case 5:
+                strcpy(players[i].name, "William Miller");
+                break;
+            case 6:
+                strcpy(players[i].name, "Joseph Davis");
+                break;
+            case 7:
+                strcpy(players[i].name, "Daniel Garcia");
+                break;
+            case 8:
+                strcpy(players[i].name, "Charles Rodriguez");
+                break;
+            case 9:
+                strcpy(players[i].name, "Thomas Martinez");
+                break;
+            case 10:
+                strcpy(players[i].name, "Christopher Hernandez");
+                break;
+        }
+
+        // Initialize other player attributes
+        players[i].runsS = 0;
+        players[i].runsC = 0;
+        players[i].ballsF = 0;
+        players[i].ballsB = 0;
+        players[i].boundaries = 0;
+        players[i].wickets = 0;
+        players[i].strikeR = 0.0;
+        players[i].econR = 0.0;
     }
-  }
+}
+
+// Function to initialize players for Team B
+void initializeTeamBPlayers(struct CricketPlayer players[]) {
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        players[i].id = i + 1;
+        strcpy(players[i].team, "Team B");
+
+        // Assign player names for Team B
+        switch (i) {
+            case 0:
+                strcpy(players[i].name, "Matthew Wilson");
+                break;
+            case 1:
+                strcpy(players[i].name, "Andrew Anderson");
+                break;
+            case 2:
+                strcpy(players[i].name, "Edward Taylor");
+                break;
+            case 3:
+                strcpy(players[i].name, "Joshua Moore");
+                break;
+            case 4:
+                strcpy(players[i].name, "Benjamin Jackson");
+                break;
+            case 5:
+                strcpy(players[i].name, "Samuel Harris");
+                break;
+            case 6:
+                strcpy(players[i].name, "Jonathan Martin");
+                break;
+            case 7:
+                strcpy(players[i].name, "Nathan Thompson");
+                break;
+            case 8:
+                strcpy(players[i].name, "Ryan White");
+                break;
+            case 9:
+                strcpy(players[i].name, "Timothy Lee");
+                break;
+            case 10:
+                strcpy(players[i].name, "Adam Scott");
+                break;
+        }
+
+        // Initialize other player attributes
+        players[i].runsS = 0;
+        players[i].runsC = 0;
+        players[i].ballsF = 0;
+        players[i].ballsB = 0;
+        players[i].boundaries = 0;
+        players[i].wickets = 0;
+        players[i].strikeR = 0.0;
+        players[i].econR = 0.0;
+    }
 }
 
 // sponsors
@@ -187,8 +207,8 @@ void printMenu(struct Match *match) {
   printf("         CPL 2024 Interactive Scoreboard\n");
   printf("/===========================================/\n");
   printf("Batting Team: %s\t\tBowling Team: %s\n", match->battingTeam.name, match->bowlingTeam.name);
-  printf("Current Over: %d\t\t\tBalls Bowled: %d\n", match->over.overNum, match->over.balls);
   printf("Runs in Over: %d\t\t\tWickets in Over: %d\n", match->over.Runs, match->over.Wickets);
+  printf("Total Runs: %d\t\t\tCurrent Over: %d\n", match->battingTeam.score, match->over.overNum);
   printf("/===========================================/\n");
   printf("                MENU                \n");
   printf("/===========================================/\n");
@@ -329,22 +349,42 @@ int isBoundary(int runs) {
     return (runs == 4 || runs == 6);
 }
 
-void startOver(struct Match *match, struct CricketPlayer players[],
-               int numPlayers, struct CricketPlayer *batter1,
-               struct CricketPlayer *batter2, struct Sponsor sponsors[]) {
-    match->over.overNum++;
-    match->over.balls = 0;
-    match->over.Runs = 0;
-    match->over.Wickets = 0;
+// Function to check if switching of teams is required
+void checkTeamSwitch(struct Match *match, int numPlayers, int *batter1Index, int *batter2Index) {
+    // Check if 20 overs have been bowled or all batters are out
+    if (match->over.Wickets == 10 || match->over.overNum == 20) {
+        // Swap batting and bowling teams
+        struct Team temp = match->battingTeam;
+        match->battingTeam = match->bowlingTeam;
+        match->bowlingTeam = temp;
 
+        *batter1Index = 0;
+        *batter2Index = 1;
+
+        // Reset over count
+        match->over.overNum = 0;
+
+        printf("Teams switched!\n");
+        
+        // Set the flag to indicate teams are switched
+        match->teamSwitched = 1;
+    }
+}
+
+void startOver(struct Match *match, struct CricketPlayer battingPlayers[], struct CricketPlayer bowlingPlayers[],
+               int numPlayers, int *batter1Index, int *batter2Index, struct Sponsor sponsors[]) {
+    match->over.overNum++; // Increment the over number after completing the over loop
     printf("Starting Over %d\n", match->over.overNum);
+
+    match->over.Runs = 0; // Reset runs for the over
+    match->over.balls = 0; // Reset balls for the over
 
     // Selecting bowler
     printf("Select the bowler:\n");
     printf("ID\tName\n");
     for (int i = 0; i < numPlayers; i++) {
-        if (strcmp(players[i].team, match->bowlingTeam.name) == 0) {
-            printf("%d\t%s\n", players[i].id, players[i].name);
+        if (strcmp(bowlingPlayers[i].team, match->bowlingTeam.name) == 0) {
+            printf("%d\t%s\n", bowlingPlayers[i].id, bowlingPlayers[i].name);
         }
     }
     int bowlerID;
@@ -354,7 +394,7 @@ void startOver(struct Match *match, struct CricketPlayer players[],
     if (bowlerID < 1 || bowlerID > numPlayers) {
         printf("Invalid player.\n");
     } else {
-        printf("Selected Bowler: %s\n", players[bowlerID - 1].name);
+        printf("Selected Bowler: %s\n", bowlingPlayers[bowlerID - 1].name);
 
         // Add runs and wickets for each ball in the over
         for (int ball = 1; ball <= 6; ball++) {
@@ -382,26 +422,26 @@ void startOver(struct Match *match, struct CricketPlayer players[],
             int batsmanID;
             printf("Which batsman scored %d runs?\n", runs);
             printf("ID\tName\n");
-            printf("%d\t%s\n", batter1->id, batter1->name);
-            printf("%d\t%s\n", batter2->id, batter2->name);
+            printf("%d\t%s\n", battingPlayers[*batter1Index].id, battingPlayers[*batter1Index].name);
+            printf("%d\t%s\n", battingPlayers[*batter2Index].id, battingPlayers[*batter2Index].name);
             printf("Enter the ID of the batsman: ");
             scanf("%d", &batsmanID);
 
             // Error handling
-            if (batsmanID != batter1->id && batsmanID != batter2->id) {
+            if (batsmanID != battingPlayers[*batter1Index].id && batsmanID != battingPlayers[*batter2Index].id) {
                 printf("Invalid player.\n");
                 continue;
             }
 
             // Update runs for batsman
-            if (batsmanID == batter1->id) {
-                batter1->runsS += runs;
-                batter1->ballsF++;
-                batter1->strikeR = calculateStrikeRate(batter1->runsS, batter1->ballsF);
+            if (batsmanID == battingPlayers[*batter1Index].id) {
+                battingPlayers[*batter1Index].runsS += runs;
+                battingPlayers[*batter1Index].ballsF++;
+                battingPlayers[*batter1Index].strikeR = calculateStrikeRate(battingPlayers[*batter1Index].runsS, battingPlayers[*batter1Index].ballsF);
             } else {
-                batter2->runsS += runs;
-                batter2->ballsF++;
-                batter2->strikeR = calculateStrikeRate(batter2->runsS, batter2->ballsF);
+                battingPlayers[*batter2Index].runsS += runs;
+                battingPlayers[*batter2Index].ballsF++;
+                battingPlayers[*batter2Index].strikeR = calculateStrikeRate(battingPlayers[*batter2Index].runsS, battingPlayers[*batter2Index].ballsF);
             }
 
             // Update match stats
@@ -417,26 +457,38 @@ void startOver(struct Match *match, struct CricketPlayer players[],
                     match->over.Wickets++;
                     match->mEvent.wickets++;
                     printSponsor(sponsors);
-
-                    // Update batting order after a wicket
-                    if (batter1->id == batsmanID) {
-                        batter1 = (batter1 == &players[MAX_PLAYERS - 1]) ? &players[0] : batter1 + 1;
+					
+					if (match->over.Wickets == 10) {
+         				printf("All out! End of innings.\n");
+         				// Check if to switch teams
+        				checkTeamSwitch(match, numPlayers, batter1Index, batter2Index);
+            			return;
+					}
+                     // Update batting order after a wicket
+                    if (batsmanID == battingPlayers[*batter1Index].id) {
+                        *batter1Index = (*batter1Index == numPlayers - 1) ? 0 : *batter1Index + 1;
                     } else {
-                        batter2 = (batter2 == &players[MAX_PLAYERS - 1]) ? &players[0] : batter2 + 1;
+                        *batter2Index = (*batter2Index == numPlayers - 1) ? 0 : *batter2Index + 1;
                     }
 
                     // Ensure both batters aren't the same
-                    if (batter1 == batter2) {
-                        batter2 = (batter2 == &players[MAX_PLAYERS - 1]) ? &players[0] : batter2 + 1;
+                    if (*batter1Index == *batter2Index) {
+                        *batter2Index = (*batter2Index == numPlayers - 1) ? 0 : *batter2Index + 1;
                     }
                 }
             }
-        }
+        }   
 
         // Update economy rate for the bowler
-        players[bowlerID - 1].ballsB += match->over.balls;
-        players[bowlerID - 1].runsC += match->over.Runs;
-        players[bowlerID - 1].econR = calculateEconomyRate(players[bowlerID - 1].runsC, players[bowlerID - 1].ballsB);
+        bowlingPlayers[bowlerID - 1].ballsB += match->over.balls;
+        bowlingPlayers[bowlerID - 1].runsC += match->over.Runs;
+        bowlingPlayers[bowlerID - 1].econR = calculateEconomyRate(bowlingPlayers[bowlerID - 1].runsC, bowlingPlayers[bowlerID - 1].ballsB);
+        
+        // Update total runs for batting team
+        match->battingTeam.score += match->over.Runs;
+        
+        // Check if to switch teams
+        checkTeamSwitch(match, numPlayers, batter1Index, batter2Index);
     }
 }
 
@@ -463,101 +515,175 @@ void printBowlingTeam(struct CricketPlayer players[], int numPlayers, const char
 }
 
 int main() {
-  // structs
-  struct Match match;
-  match.over.overNum = 0;
-  match.over.balls = 0;
-  match.over.Runs = 0;
-  match.over.Wickets = 0;
-  struct CricketPlayer players1[MAX_PLAYERS];
-  struct CricketPlayer players2[MAX_PLAYERS];
-  struct CricketPlayer *batter1, *batter2;
-  struct Sponsor sponsors[MAX_SPONSORS];
+	// structs
+	struct Match match;
+	match.over.overNum = 0;
+	match.over.balls = 0;
+	match.over.Runs = 0;
+	match.over.Wickets = 0;
+	struct CricketPlayer players1[MAX_PLAYERS];
+	struct CricketPlayer players2[MAX_PLAYERS];
+	struct Sponsor sponsors[MAX_SPONSORS];
 
-  // teams, sponsors
-  initializeTeams(&match);
-  initializePlayers(players1, match.battingTeam.name);
-  initializePlayers(players2, match.bowlingTeam.name);
-  initializeSponsors(sponsors);
+	// teams, sponsors
+	initializeTeams(&match);
+	initializeTeamAPlayers(players1); // Initialize players for Team A
+	initializeTeamBPlayers(players2); // Initialize players for Team B
+	initializeSponsors(sponsors);
 
-  // first two batsmen
-  batter1 = &players1[0];
-  batter2 = &players1[1];
+	int batter1Index = 0;
+	int batter2Index = 1;
 
-  printf("\n");
+	printf("\n");
 
-  int choice;
+	int choice;
 
-  do {
-    // gonna add more stuff here, especially stuff to do with boosting player
-    // self esteem we can add options to show this persons runs and that ones
-    // wickets and the strikerate etc etc
+	do {
     printMenu(&match);
     scanf("%d", &choice);
 
     switch (choice) {
-    case 1:
-      startOver(&match, players2, MAX_PLAYERS, batter1, batter2, sponsors);
-      break;
-    case 2:
-        {
-		int teamChoice;
-        printf("Select team:\n");
-        printf("1. Batting Team\n");
-        printf("2. Bowling Team\n");
-        printf("Enter your choice: ");
-        scanf("%d", &teamChoice);
+		case 1:
+	      startOver(&match, players1, players2, MAX_PLAYERS, &batter1Index, &batter2Index, sponsors);
+	      break;
+	    case 2:
+			{
+			int teamChoice;
+	        printf("Select team:\n");
+	        printf("1. Batting Team\n");
+	        printf("2. Bowling Team\n");
+	        printf("Enter your choice: ");
+	        scanf("%d", &teamChoice);
+	
+	        switch (teamChoice) {
+	            case 1:
+	                showBattingPlayerStatistics(players1, MAX_PLAYERS, &match);
+	                break;
+	            case 2:
+	                showBowlingPlayerStatistics(players2, MAX_PLAYERS, &match);
+	                break;
+	            default:
+	                printf("Invalid choice.\n");
+	                break;
+	        	}
+	        break;
+	    	}
+		case 3:
+			{
+	        int teamChoice;
+	        printf("Select team:\n");
+	        printf("1. Batting Team\n");
+	        printf("2. Bowling Team\n");
+	        printf("Enter your choice: ");
+	        scanf("%d", &teamChoice);
+	
+	        switch (teamChoice) {
+	            case 1:
+	                showTeamStats(players1, MAX_PLAYERS, match.battingTeam.name);
+	                break;
+	            case 2:
+	                showTeamStats(players2, MAX_PLAYERS, match.bowlingTeam.name);
+	                break;
+	            default:
+	                printf("Invalid choice.\n");
+	                break;
+	        }
+	        break;
+			}
+	    case 4:
+			printBattingTeamScoreboard(players1, MAX_PLAYERS, match.battingTeam.name);
+			break;
+	    case 5:
+			printBowlingTeamScoreboard(players2, MAX_PLAYERS, match.bowlingTeam.name);
+			break;	
+	    case 6:
+			printf("End Match\n");
+			break;	
+	    default:
+			printf("Invalid choice.\n");
+			break;
+		}
+		
+		// Check if teams are switched
+        if (match.teamSwitched) {
+            printf("Teams have been switched.\n");
+            
+            // Print the runs scored by the previous batting team
+            printf("%s scored %d runs.\n", match.bowlingTeam.name, match.bowlingTeam.score);
 
-        switch (teamChoice) {
-            case 1:
-                showBattingPlayerStatistics(players1, MAX_PLAYERS, &match);
-                break;
-            case 2:
-                showBowlingPlayerStatistics(players2, MAX_PLAYERS, &match);
-                break;
-            default:
-                printf("Invalid choice.\n");
-                break;
-        	}
-        break;
-    	}
-    case 3:
-    {
-        int teamChoice;
-        printf("Select team:\n");
-        printf("1. Batting Team\n");
-        printf("2. Bowling Team\n");
-        printf("Enter your choice: ");
-        scanf("%d", &teamChoice);
+            // Reset the teamSwitched flag
+            match.teamSwitched = 0;
 
-        switch (teamChoice) {
-            case 1:
-                showTeamStats(players1, MAX_PLAYERS, match.battingTeam.name);
-                break;
-            case 2:
-                showTeamStats(players2, MAX_PLAYERS, match.bowlingTeam.name);
-                break;
-            default:
-                printf("Invalid choice.\n");
-                break;
+            // Create a new loop for the new team to start batting
+            do {
+                // Print menu for the new batting team
+                printMenu(&match);
+                scanf("%d", &choice);
+
+                switch (choice) {
+                    case 1:
+                        startOver(&match, players2, players1, MAX_PLAYERS, &batter1Index, &batter2Index, sponsors);
+                        break;
+                    case 2:
+						{
+						int teamChoice;
+	        			printf("Select team:\n");
+	       				printf("1. Batting Team\n");
+	        			printf("2. Bowling Team\n");
+	        			printf("Enter your choice: ");
+	        			scanf("%d", &teamChoice);
+	
+	        			switch (teamChoice) {
+	            			case 1:
+	                			showBattingPlayerStatistics(players2, MAX_PLAYERS, &match);
+	                			break;
+	            			case 2:
+	                			showBowlingPlayerStatistics(players1, MAX_PLAYERS, &match);
+	                			break;
+	            			default:
+	                			printf("Invalid choice.\n");
+	                			break;
+	        			}
+	        			break;
+	    				}
+                    case 3:
+                        {
+				        int teamChoice;
+				        printf("Select team:\n");
+				        printf("1. Batting Team\n");
+				        printf("2. Bowling Team\n");
+				        printf("Enter your choice: ");
+				        scanf("%d", &teamChoice);
+				
+				        switch (teamChoice) {
+				            case 1:
+				                showTeamStats(players2, MAX_PLAYERS, match.battingTeam.name);
+				                break;
+				            case 2:
+				                showTeamStats(players1, MAX_PLAYERS, match.bowlingTeam.name);
+				                break;
+				            default:
+				                printf("Invalid choice.\n");
+				                break;
+				        }
+				        break;
+						}
+                    case 4:
+                        printBattingTeamScoreboard(players2, MAX_PLAYERS, match.battingTeam.name);
+                        break;
+                    case 5:
+                        printBowlingTeamScoreboard(players1, MAX_PLAYERS, match.bowlingTeam.name);
+                        break;
+                    case 6:
+                        printf("End Match\n");
+                        break;
+                    default:
+                        printf("Invalid choice.\n");
+                        break;
+                }
+            } while (choice != 6); // Loop until the match ends
         }
-        break;
-    }
+	} while (choice != 6);
 
-    case 4:
-      printBattingTeamScoreboard(players1, MAX_PLAYERS, match.battingTeam.name);
-      break;
-    case 5:
-      printBowlingTeamScoreboard(players2, MAX_PLAYERS, match.bowlingTeam.name);
-      break;
-    case 6:
-      printf("End Match\n");
-      break;
-    default:
-      printf("Invalid choice.\n");
-      break;
-    }
-  } while (choice != 6);
-
-  return 0;
+	return 0;
 }
