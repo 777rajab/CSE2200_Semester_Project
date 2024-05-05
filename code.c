@@ -9,6 +9,13 @@
 #define MAX_TEAM_LENGTH 50
 #define MAX_SPONSORS 5
 
+// Function to introduce a delay
+void delay (unsigned int mseconds)
+{
+	time_t go=mseconds + clock();
+	while (go>clock());
+}
+
 struct CricketPlayer {
   int id;
   char team[MAX_TEAM_LENGTH];
@@ -197,8 +204,10 @@ void printSponsor(struct Sponsor sponsors[]) {
   srand(time(NULL));
   int sponsorIndex = rand() % MAX_SPONSORS;
 
-  printf("Sponsored by: %s\n", sponsors[sponsorIndex].name);
-  printf("Slogan: %s\n", sponsors[sponsorIndex].slogan);
+  printf("The CPL Final is proudly sponsored by %s!\n", sponsors[sponsorIndex].name);
+  printf("%s\n", sponsors[sponsorIndex].slogan);
+  delay(2500);
+  system("cls");
 }
 
 // menu
@@ -234,15 +243,16 @@ void showBattingPlayerStatistics(struct CricketPlayer players[], int numPlayers,
     int playerID;
     printf("Enter the ID of the player: ");
     scanf("%d", &playerID);
-
+    system("cls");
     // Display player statistics based on player ID
     for (int i = 0; i < numPlayers; i++) {
         if (players[i].id == playerID && strcmp(players[i].team, match->battingTeam.name) == 0) {
-            printf("Player Name: %s\n", players[i].name);
+            printf("Let's make some noise for %s!\n", players[i].name);
             printf("Runs Scored: %d\n", players[i].runsS);
-            printf("Balls Faced: %d\n", players[i].ballsF);
             printf("Boundaries: %d\n", players[i].boundaries);
+            printf("Balls Faced: %d\n", players[i].ballsF);
             printf("Strike Rate: %.2f\n", players[i].strikeR);
+            delay(2500);
             break;
         }
     }
@@ -261,41 +271,44 @@ void showBowlingPlayerStatistics(struct CricketPlayer players[], int numPlayers,
     int playerID;
     printf("Enter the ID of the player: ");
     scanf("%d", &playerID);
-
+	system("cls");
     // Display player statistics based on player ID
     for (int i = 0; i < numPlayers; i++) {
         if (players[i].id == playerID && strcmp(players[i].team, match->bowlingTeam.name) == 0) {
-            printf("Player Name: %s\n", players[i].name);
-            printf("Runs Conceded: %d\n", players[i].runsC);
-            printf("Balls Bowled: %d\n", players[i].ballsB);
+            printf("Let's make some noise for %s!\n", players[i].name);
             printf("Wickets: %d\n", players[i].wickets);
+            printf("Balls Bowled: %d\n", players[i].ballsB);
+            printf("Runs Conceded: %d\n", players[i].runsC);
             printf("Economy Rate: %.2f\n", players[i].econR);
+            delay(2500);
             break;
         }
     }
 }
 
 // Function to display team statistics
-void showTeamStats(struct CricketPlayer players[], int numPlayers, const char *teamName) {
+void showTeamStats(struct CricketPlayer players[], int numPlayers, const char *teamName, struct Match *match) {
+	system("cls");
     int totalRuns = 0;
     int totalWickets = 0;
-    int totalOvers = 0;
+    int totalOvers = match->over.overNum;
 
     // Calculate total runs, wickets, and overs
     for (int i = 0; i < numPlayers; i++) {
         if (strcmp(players[i].team, teamName) == 0) {
             totalRuns += players[i].runsS;
             totalWickets += players[i].wickets;
-            // Assuming each player has bowled 6 balls in an over
-            totalOvers += players[i].ballsB / 6;
         }
     }
 
     // Display team statistics
-    printf("Team: %s\n", teamName);
+    printf("Let's have a look at %s's stats!\n\n", teamName);
     printf("Total Runs: %d\n", totalRuns);
     printf("Total Wickets: %d\n", totalWickets);
     printf("Total Overs Bowled: %d\n", totalOvers);
+    printf("Runs in Current Over: %d\n", match->over.Runs);
+    printf("Wickets in Current Over: %d\n", match->over.Wickets);
+    delay(2500);
 }
 
 // Function to print batting team scoreboard inline
@@ -310,6 +323,7 @@ void printBattingTeamScoreboard(struct CricketPlayer players[], int numPlayers, 
         }
     }
     printf("Total Runs: %d\n", totalRuns);
+    delay(2500);
 }
 
 // Function to print bowling team scoreboard inline
@@ -325,6 +339,7 @@ void printBowlingTeamScoreboard(struct CricketPlayer players[], int numPlayers, 
         }
     }
     printf("Total Overs Bowled: %d\n", totalOvers);
+    delay(2500);
 }
 
 // Function to calculate strike rate for a batsman
@@ -353,6 +368,15 @@ int isBoundary(int runs) {
 void checkTeamSwitch(struct Match *match, int numPlayers, int *batter1Index, int *batter2Index) {
     // Check if 20 overs have been bowled or all batters are out
     if (match->over.Wickets == 10 || match->over.overNum == 20) {
+    	
+    	if (match->battingTeam.score < match->bowlingTeam.score && match->teamSwitched == 1) {
+			printf("%s wins the match!\n", match->bowlingTeam.name);
+			delay(3000);
+		} else {
+			// The match ends in a draw or tie
+			printf("The match ends in a draw!\n");
+		}
+    	
         // Swap batting and bowling teams
         struct Team temp = match->battingTeam;
         match->battingTeam = match->bowlingTeam;
@@ -363,8 +387,6 @@ void checkTeamSwitch(struct Match *match, int numPlayers, int *batter1Index, int
 
         // Reset over count
         match->over.overNum = 0;
-
-        printf("Teams switched!\n");
         
         // Set the flag to indicate teams are switched
         match->teamSwitched = 1;
@@ -373,7 +395,7 @@ void checkTeamSwitch(struct Match *match, int numPlayers, int *batter1Index, int
 
 void startOver(struct Match *match, struct CricketPlayer battingPlayers[], struct CricketPlayer bowlingPlayers[],
                int numPlayers, int *batter1Index, int *batter2Index, struct Sponsor sponsors[]) {
-    match->over.overNum++; // Increment the over number after completing the over loop
+	match->over.overNum++; // Increment the over number after completing the over loop
     printf("Starting Over %d\n", match->over.overNum);
 
     match->over.Runs = 0; // Reset runs for the over
@@ -393,104 +415,130 @@ void startOver(struct Match *match, struct CricketPlayer battingPlayers[], struc
     // Error checking
     if (bowlerID < 1 || bowlerID > numPlayers) {
         printf("Invalid player.\n");
+        delay(1000);
+		return;
     } else {
         printf("Selected Bowler: %s\n", bowlingPlayers[bowlerID - 1].name);
-
-        // Add runs and wickets for each ball in the over
-        for (int ball = 1; ball <= 6; ball++) {
-            int runs;
-            printf("Enter runs scored on ball %d: ", ball);
-            scanf("%d", &runs);
-
-            // Ask if the runs constitute a boundary if it's 4
-            if (runs == 4) {
-                int isBoundaryRun;
-                printf("Did the batsman hit a boundary? (1 for yes, 0 for no): ");
-                scanf("%d", &isBoundaryRun);
-                if (isBoundaryRun) {
-                    match->mEvent.boundaries++;
-                    printSponsor(sponsors);
-                }
-            }
-            // Ask if the runs constitute a boundary if it's 6
-            else if (runs == 6) {
-                match->mEvent.boundaries++;
-                printSponsor(sponsors);
-            }
-
-            // Select the batsman who scored the runs
-            int batsmanID;
-            printf("Which batsman scored %d runs?\n", runs);
-            printf("ID\tName\n");
-            printf("%d\t%s\n", battingPlayers[*batter1Index].id, battingPlayers[*batter1Index].name);
-            printf("%d\t%s\n", battingPlayers[*batter2Index].id, battingPlayers[*batter2Index].name);
-            printf("Enter the ID of the batsman: ");
-            scanf("%d", &batsmanID);
-
-            // Error handling
-            if (batsmanID != battingPlayers[*batter1Index].id && batsmanID != battingPlayers[*batter2Index].id) {
-                printf("Invalid player.\n");
-                continue;
-            }
-
-            // Update runs for batsman
-            if (batsmanID == battingPlayers[*batter1Index].id) {
-                battingPlayers[*batter1Index].runsS += runs;
-                battingPlayers[*batter1Index].ballsF++;
-                battingPlayers[*batter1Index].strikeR = calculateStrikeRate(battingPlayers[*batter1Index].runsS, battingPlayers[*batter1Index].ballsF);
-            } else {
-                battingPlayers[*batter2Index].runsS += runs;
-                battingPlayers[*batter2Index].ballsF++;
-                battingPlayers[*batter2Index].strikeR = calculateStrikeRate(battingPlayers[*batter2Index].runsS, battingPlayers[*batter2Index].ballsF);
-            }
-
-            // Update match stats
-            match->over.Runs += runs;
-            match->over.balls++;
-
-            // Check for a wicket
-            if (runs == 0) {
-                int wicket;
-                printf("Was there a wicket on ball %d? (1 for yes, 0 for no): ", ball);
-                scanf("%d", &wicket);
-                if (wicket == 1) {
-                    match->over.Wickets++;
-                    match->mEvent.wickets++;
-                    printSponsor(sponsors);
-					
-					if (match->over.Wickets == 10) {
-         				printf("All out! End of innings.\n");
-         				// Check if to switch teams
-        				checkTeamSwitch(match, numPlayers, batter1Index, batter2Index);
-            			return;
+        delay(1000);
+        system("cls");
+	}
+	// Add runs and wickets for each ball in the over
+    for (int ball = 1; ball <= 6; ball++) {
+	    int runs;
+	    printf("Enter runs scored on ball %d: ", ball);
+	    scanf("%d", &runs);
+		
+		// Check if the batting team has surpassed the bowling team's runs
+		if (match->battingTeam.score > match->bowlingTeam.score && match->teamSwitched == 1) {
+			printf("Congratulations! %s has won the match!\n", match->battingTeam.name);
+            return;
+		}
+		
+	    // Select the batsman who scored the runs
+	    int batsmanID;
+	    printf("Which batsman scored %d runs?\n", runs);
+	    printf("ID\tName\n");
+	    printf("%d\t%s\n", battingPlayers[*batter1Index].id, battingPlayers[*batter1Index].name);
+	    printf("%d\t%s\n", battingPlayers[*batter2Index].id, battingPlayers[*batter2Index].name);
+	    printf("Enter the ID of the batsman: ");
+	    scanf("%d", &batsmanID);
+	
+	    // Error handling
+	    if (batsmanID != battingPlayers[*batter1Index].id && batsmanID != battingPlayers[*batter2Index].id) {
+	        printf("Invalid player.\n");
+	        continue;
+	    }
+	
+	    // Update runs for batsman
+	    if (batsmanID == battingPlayers[*batter1Index].id) {
+	        battingPlayers[*batter1Index].runsS += runs;
+	        battingPlayers[*batter1Index].ballsF++;
+	        battingPlayers[*batter1Index].strikeR = calculateStrikeRate(battingPlayers[*batter1Index].runsS, battingPlayers[*batter1Index].ballsF);
+	    } else {
+	        battingPlayers[*batter2Index].runsS += runs;
+	        battingPlayers[*batter2Index].ballsF++;
+	        battingPlayers[*batter2Index].strikeR = calculateStrikeRate(battingPlayers[*batter2Index].runsS, battingPlayers[*batter2Index].ballsF);
+	    }
+	            
+	    // Ask if the runs constitute a boundary if it's 4
+	    if (runs == 4) {
+	        int isBoundaryRun;
+	        printf("Did the batsman hit a boundary? (1 for yes, 0 for no): ");
+	        scanf("%d", &isBoundaryRun);
+	        if (isBoundaryRun) {
+	            match->mEvent.boundaries++;
+	            system("cls");
+	            printf("Fantastic! That's a boundary!\n\n");
+	            printSponsor(sponsors);
+	        }
+	    }
+	    // Ask if the runs constitute a boundary if it's 6
+	    else if (runs == 6) {
+	        match->mEvent.boundaries++;
+	        system("cls");
+	        printf("Wow! That's a massive SIX!\n\n");
+	        printSponsor(sponsors);
+	    }
+	
+	    // Update match stats
+	    match->over.Runs += runs;
+	    match->over.balls++;
+				
+	    // Check for a wicket
+	    if (runs == 0) {
+	        int wicket;
+	        printf("Was there a wicket on ball %d? (1 for yes, 0 for no): ", ball);
+	        scanf("%d", &wicket);
+	        if (wicket == 1) {
+	            match->over.Wickets++;
+	            match->mEvent.wickets++;
+	            system("cls");
+	            printf("Out! What a wicket!\n\n");
+	            printSponsor(sponsors);
+						
+				if (match->over.Wickets == 10) {
+	         		printf("All out! End of innings.\n");
+	         		delay(2500);
+	         				
+	         		if (match->battingTeam.score < match->bowlingTeam.score && match->teamSwitched == 1) {
+						printf("%s wins the match!\n", match->bowlingTeam.name);
+						delay(3000);
+					} else {
+						// The match ends in a draw or tie
+						printf("The match ends in a draw!\n");
 					}
-                     // Update batting order after a wicket
-                    if (batsmanID == battingPlayers[*batter1Index].id) {
-                        *batter1Index = (*batter1Index == numPlayers - 1) ? 0 : *batter1Index + 1;
-                    } else {
-                        *batter2Index = (*batter2Index == numPlayers - 1) ? 0 : *batter2Index + 1;
-                    }
+	         		// Check if to switch teams
+	        		checkTeamSwitch(match, numPlayers, batter1Index, batter2Index);
+	            	return;
+				}
+	            // Update batting order after a wicket
+	            if (batsmanID == battingPlayers[*batter1Index].id) {
+	                *batter1Index = (*batter1Index == numPlayers - 1) ? 0 : *batter1Index + 1;
+	            } else {
+	                *batter2Index = (*batter2Index == numPlayers - 1) ? 0 : *batter2Index + 1;
+	            }
+	
+	            // Ensure both batters aren't the same
+	            if (*batter1Index == *batter2Index) {
+	                *batter2Index = (*batter2Index == numPlayers - 1) ? 0 : *batter2Index + 1;
+	            }
+	        }
+	    }
+	    printf("\n");
+	}   
 
-                    // Ensure both batters aren't the same
-                    if (*batter1Index == *batter2Index) {
-                        *batter2Index = (*batter2Index == numPlayers - 1) ? 0 : *batter2Index + 1;
-                    }
-                }
-            }
-        }   
-
-        // Update economy rate for the bowler
-        bowlingPlayers[bowlerID - 1].ballsB += match->over.balls;
-        bowlingPlayers[bowlerID - 1].runsC += match->over.Runs;
-        bowlingPlayers[bowlerID - 1].econR = calculateEconomyRate(bowlingPlayers[bowlerID - 1].runsC, bowlingPlayers[bowlerID - 1].ballsB);
+    // Update economy rate for the bowler
+    bowlingPlayers[bowlerID - 1].ballsB += match->over.balls;
+    bowlingPlayers[bowlerID - 1].runsC += match->over.Runs;
+    bowlingPlayers[bowlerID - 1].econR = calculateEconomyRate(bowlingPlayers[bowlerID - 1].runsC, bowlingPlayers[bowlerID - 1].ballsB);
         
-        // Update total runs for batting team
-        match->battingTeam.score += match->over.Runs;
+    // Update total runs for batting team
+    match->battingTeam.score += match->over.Runs;
         
-        // Check if to switch teams
-        checkTeamSwitch(match, numPlayers, batter1Index, batter2Index);
-    }
+    // Check if to switch teams
+    checkTeamSwitch(match, numPlayers, batter1Index, batter2Index);
 }
+
 
 // Function to print batting team players
 void printBattingTeam(struct CricketPlayer players[], int numPlayers, const char *teamName) {
@@ -539,9 +587,10 @@ int main() {
 	int choice;
 
 	do {
+	system("cls");
     printMenu(&match);
     scanf("%d", &choice);
-
+	system("cls");
     switch (choice) {
 		case 1:
 	      startOver(&match, players1, players2, MAX_PLAYERS, &batter1Index, &batter2Index, sponsors);
@@ -579,10 +628,10 @@ int main() {
 	
 	        switch (teamChoice) {
 	            case 1:
-	                showTeamStats(players1, MAX_PLAYERS, match.battingTeam.name);
+	                showTeamStats(players1, MAX_PLAYERS, match.battingTeam.name, &match);
 	                break;
 	            case 2:
-	                showTeamStats(players2, MAX_PLAYERS, match.bowlingTeam.name);
+	                showTeamStats(players2, MAX_PLAYERS, match.bowlingTeam.name, &match);
 	                break;
 	            default:
 	                printf("Invalid choice.\n");
@@ -606,14 +655,20 @@ int main() {
 		
 		// Check if teams are switched
         if (match.teamSwitched) {
-            printf("Teams have been switched.\n");
+        	system("cls");
+            printf("Teams have been switched! It's time for a new innings!\n\n");
             
             // Print the runs scored by the previous batting team
-            printf("%s scored %d runs.\n", match.bowlingTeam.name, match.bowlingTeam.score);
+            printf("%s just scored %d runs!\n\n", match.bowlingTeam.name, match.bowlingTeam.score);
+			
+			// Calculate the runs needed to win
+			int runsNeeded = match.bowlingTeam.score + 1;
 
-            // Reset the teamSwitched flag
-            match.teamSwitched = 0;
-
+			// Display the runs needed for the new batting team to win
+			printf("%s needs %d runs to win in 20 overs! Can they do it?", match.battingTeam.name, runsNeeded);
+			
+			delay(2500);
+			system("cls");
             // Create a new loop for the new team to start batting
             do {
                 // Print menu for the new batting team
@@ -657,10 +712,10 @@ int main() {
 				
 				        switch (teamChoice) {
 				            case 1:
-				                showTeamStats(players2, MAX_PLAYERS, match.battingTeam.name);
+				                showTeamStats(players2, MAX_PLAYERS, match.battingTeam.name, &match);
 				                break;
 				            case 2:
-				                showTeamStats(players1, MAX_PLAYERS, match.bowlingTeam.name);
+				                showTeamStats(players1, MAX_PLAYERS, match.bowlingTeam.name, &match);
 				                break;
 				            default:
 				                printf("Invalid choice.\n");
